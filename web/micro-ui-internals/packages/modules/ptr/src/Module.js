@@ -273,13 +273,13 @@ export const PTRLinks = ({ matchPath, userType }) => {
     //   i18nKey: t("PT_MY_APPLICATION"),
     // },
     {
-      link: `${matchPath}/ptr/my-applications`,
+      link: `${matchPath}/ptr/my-application`,
       i18nKey: t("PTR_MY_APPLICATIONS_HEADER"),
     },
-    {
-      link: `${matchPath}/property/property-mutation`,
-      i18nKey: t("PT_PROPERTY_MUTATION"),
-    },
+    // {
+    //   link: `${matchPath}/property/property-mutation`,
+    //   i18nKey: t("PT_PROPERTY_MUTATION"),
+    // },
     {
       link: `${matchPath}/howItWorks`,
       i18nKey: t("PT_HOW_IT_WORKS"),
