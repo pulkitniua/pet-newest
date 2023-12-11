@@ -33,7 +33,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
     { enabled: !action?.isTerminateState }
   );
 
-
   const [config, setConfig] = useState({});
   const [defaultValues, setDefaultValues] = useState({});
   const [approvers, setApprovers] = useState([]);
@@ -41,10 +40,8 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
   const [file, setFile] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [error, setError] = useState(null);
- 
-  const [disableActionSubmit, setDisableActionSubmit] = useState(false);
 
-  
+  const [disableActionSubmit, setDisableActionSubmit] = useState(false);
 
   useEffect(() => {
     setApprovers(approverData?.Employees?.map((employee) => ({ uuid: employee?.uuid, name: employee?.user?.name })));
@@ -80,7 +77,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
   function submit(data) {
     console.log("dataaaaa123", data);
     if (action?.action == "COMMON_APPROVED") {
-      
       let workflow = { action: "OPEN", comment: data?.comments, businessService: "ptr", moduleName: "pet-services" };
       applicationData.creationReason = "CREATE";
       submitAction({
@@ -110,26 +106,24 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
           },
         ],
       });
-     } 
-   
+    }
   }
 
   useEffect(() => {
     if (action) {
       setConfig(
-          configPTApproverApplication({
-            t,
-            action,
-            approvers,
-            selectedApprover,
-            setSelectedApprover,
-            selectFile,
-            uploadedFile,
-            setUploadedFile,
-            businessService,
-          })
-        );
-      
+        configPTApproverApplication({
+          t,
+          action,
+          approvers,
+          selectedApprover,
+          setSelectedApprover,
+          selectFile,
+          uploadedFile,
+          setUploadedFile,
+          businessService,
+        })
+      );
     }
   }, [action, approvers, uploadedFile]);
 
@@ -144,17 +138,15 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
       isDisabled={!action.showFinancialYearsModal ? PTALoading || (action?.docUploadRequired && !uploadedFile) : !selectedFinancialYear}
       formId="modal-action"
     >
-       (
-        <FormComposer
-          config={config.form}
-          noBoxShadow
-          inline
-          childrenAtTheBottom
-          onSubmit={submit}
-          defaultValues={defaultValues}
-          formId="modal-action"
-        />
-      )
+      <FormComposer
+        config={config.form}
+        noBoxShadow
+        inline
+        childrenAtTheBottom
+        onSubmit={submit}
+        defaultValues={defaultValues}
+        formId="modal-action"
+      />
     </Modal>
   ) : (
     <Loader />

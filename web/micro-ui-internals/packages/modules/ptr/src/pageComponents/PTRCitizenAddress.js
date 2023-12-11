@@ -25,9 +25,9 @@ const PTRCitizenAddress = ({ t, config, onSelect, userType, formData, formState,
         type: "text",
         name: "street",
         validation: {
-          pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          pattern: "[a-zA-Z0-9 !@#$%^&*()_+-={};':\\\\|,.<>/?]{1,64}",
           // maxlength: 256,
-          title: t("CORE_COMMON_STREET_INVALID"),
+          // title: t("CORE_COMMON_STREET_INVALID"),
         },
       },
       {
@@ -35,59 +35,57 @@ const PTRCitizenAddress = ({ t, config, onSelect, userType, formData, formState,
         type: "text",
         name: "doorNo",
         validation: {
-          pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          pattern: "[a-zA-Z0-9 !@#$%^&*()_+-={};':\\\\|,.<>/?]{1,64}",
           // maxlength: 256,
-          title: t("CORE_COMMON_DOOR_INVALID"),
+          // title: t("CORE_COMMON_DOOR_INVALID"),
         },
       },
       {
         label: "PTR_HOUSE_NAME",
         type: "text",
         name: "buildingName",
-         validation: {
-        //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
-        //   // maxlength: 256,
-        //   title: t("CORE_COMMON_DOOR_INVALID"),
-         },
+        validation: {
+          //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          //   // maxlength: 256,
+          //   title: t("CORE_COMMON_DOOR_INVALID"),
+        },
       },
       {
         label: "PTR_ADDRESS_LINE1",
         type: "text",
         name: "addressLine1",
-         validation: {
-        //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
-        //   // maxlength: 256,
-        //   title: t("CORE_COMMON_DOOR_INVALID"),
-         },
+        validation: {
+          //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          //   // maxlength: 256,
+          //   title: t("CORE_COMMON_DOOR_INVALID"),
+        },
       },
       {
         label: "PTR_ADDRESS_LINE2",
         type: "text",
         name: "addressLine2",
-         validation: {
-        //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
-        //   // maxlength: 256,
-        //   title: t("CORE_COMMON_DOOR_INVALID"),
-         },
+        validation: {
+          //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          //   // maxlength: 256,
+          //   title: t("CORE_COMMON_DOOR_INVALID"),
+        },
       },
       {
         label: "PTR_landmark",
         type: "text",
         name: "landmark",
-         validation: {
-        //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
-        //   // maxlength: 256,
-        //   title: t("CORE_COMMON_DOOR_INVALID"),
-         },
+        validation: {
+          //   pattern: "[a-zA-Z0-9 !@#$%^&*()_+\-={};':\\\\|,.<>/?]{1,64}",
+          //   // maxlength: 256,
+          //   title: t("CORE_COMMON_DOOR_INVALID"),
+        },
       },
-    
-      
     ];
   }
 
   const convertValidationToRules = ({ validation, name, messages }) => {
     if (validation) {
-      let { pattern: valPattern, maxlength,minlength, required: valReq } = validation || {};
+      let { pattern: valPattern, maxlength, minlength, required: valReq } = validation || {};
       let pattern = (value) => {
         if (valPattern) {
           if (valPattern instanceof RegExp) return valPattern.test(value) ? true : messages?.pattern || `${name.toUpperCase()}_PATTERN`;
@@ -100,7 +98,7 @@ const PTRCitizenAddress = ({ t, config, onSelect, userType, formData, formState,
       let minLength = (value) => (minlength ? (value?.length >= minlength ? true : messages?.minlength || `${name.toUpperCase()}_MINLENGTH`) : true);
       let required = (value) => (valReq ? (!!value ? true : messages?.required || `${name.toUpperCase()}_REQUIRED`) : true);
 
-      return { pattern, required, maxLength,minlength };
+      return { pattern, required, maxLength, minlength };
     }
     return {};
   };
@@ -164,22 +162,21 @@ const PTRCitizenAddress = ({ t, config, onSelect, userType, formData, formState,
   }
   return (
     <React.Fragment>
-    {window.location.href.includes("/citizen") ? <Timeline currentStep={3}/> : null}
-    <FormStep
-      config={{ ...config, inputs }}
-      _defaultValues={{
-        street: formData?.address.street,
-        doorNo: formData?.address.doorNo,
-        buildingName: formData?.address.buildingName,
-        addressLine1: formData?.address.addressLine1,
-        addressLine2: formData?.address.addressLine2,
-        landmark: formData?.address.landmark  
-       }}
-
-      onSelect={(data) => onSelect(config.key, data)}
-      onSkip={onSkip}
-      t={t}
-    />
+      {window.location.href.includes("/citizen") ? <Timeline currentStep={3} /> : null}
+      <FormStep
+        config={{ ...config, inputs }}
+        _defaultValues={{
+          street: formData?.address.street,
+          doorNo: formData?.address.doorNo,
+          buildingName: formData?.address.buildingName,
+          addressLine1: formData?.address.addressLine1,
+          addressLine2: formData?.address.addressLine2,
+          landmark: formData?.address.landmark,
+        }}
+        onSelect={(data) => onSelect(config.key, data)}
+        onSkip={onSkip}
+        t={t}
+      />
     </React.Fragment>
   );
 };

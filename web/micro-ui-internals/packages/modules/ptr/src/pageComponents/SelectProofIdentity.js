@@ -13,36 +13,30 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
   // isMutation ? ownerIndex : window.location.href.charAt(window.location.href.length - 1);
 
   const [uploadedFile, setUploadedFile] = useState(() => formData?.document?.proofIdentity?.fileStoreId || null);
-  const [file, setFile] = useState(formData?.document
-?.proofIdentity);
+  const [file, setFile] = useState(formData?.document?.proofIdentity);
   const [error, setError] = useState(null);
   const cityDetails = Digit.ULBService.getCurrentUlb();
   const onSkip = () => onSelect();
   const isUpdateProperty = formData?.isUpdateProperty || false;
   let isEditProperty = formData?.isEditProperty || false;
 
-  console.log("formdata in docccc--------------------------*********",formData)
+  console.log("formdata in docccc--------------------------*********", formData);
 
-  const [dropdownValue, setDropdownValue] = useState(formData?.document
-?.documents?.proofIdentity?.documentType);
+  const [dropdownValue, setDropdownValue] = useState(formData?.document?.documents?.proofIdentity?.documentType);
   let dropdownData = [];
   let dropdownData1 = [];
   let dropdownData2 = [];
   let dropdownData3 = [];
-
-  
 
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const stateId = Digit.ULBService.getStateId();
 
   const { isLoading, data } = Digit.Hooks.ptr.usePetMDMS(stateId, "PetService", "Documents");
 
-  const PTRDocument = data?.PetService?.Documents.map(document => ({
+  const PTRDocument = data?.PetService?.Documents.map((document) => ({
     ...document,
-    hasDropdown: true
+    hasDropdown: true,
   }));
-
- 
 
   const proofIdentity = Array.isArray(PTRDocument) && PTRDocument;
   if (proofIdentity.length > 0) {
@@ -51,39 +45,30 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
     dropdownData2 = proofIdentity[2]?.dropdownData;
     dropdownData3 = proofIdentity[3]?.dropdownData;
 
-
-
-
     dropdownData.forEach((data) => {
       data.i18nKey = stringReplaceAll(data.code, ".", "_");
     });
 
-    
     dropdownData1.forEach((data) => {
       data.i18nKey = stringReplaceAll(data.code, ".", "_");
     });
 
-    
     dropdownData2.forEach((data) => {
       data.i18nKey = stringReplaceAll(data.code, ".", "_");
     });
 
-    
     dropdownData3.forEach((data) => {
       data.i18nKey = stringReplaceAll(data.code, ".", "_");
     });
-    
-    
   }
-
-
-
-
-
-
-
-
-
+  ///////////////////////////// check for localization codes///////////////////
+  const localizationCodes = [
+    ...dropdownData.map((data) => data.code),
+    ...dropdownData1.map((data) => data.code),
+    ...dropdownData2.map((data) => data.code),
+    ...dropdownData3.map((data) => data.code),
+  ];
+  console.log("dfdfdffdfdff", localizationCodes);
   function setTypeOfDropdownValue(dropdownValue) {
     setDropdownValue(dropdownValue);
   }
@@ -104,7 +89,6 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
     setFile(e.target.files[3]);
   }
 
-
   useEffect(() => {
     (async () => {
       setError(null);
@@ -120,7 +104,7 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
             } else {
               setError(t("PT_FILE_UPLOAD_ERROR"));
             }
-          } catch (err) { }
+          } catch (err) {}
         }
       }
     })();
@@ -130,11 +114,9 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
 
   const handleSubmit = () => {
     setmultipleownererror(null);
-    if (formData?.docchipCategory?.code === "INDIVIDUAL.MULTIPLEOWNERS" && formData?.document
-?.length <= 1 &&  !isMutation) {
+    if (formData?.docchipCategory?.code === "INDIVIDUAL.MULTIPLEOWNERS" && formData?.document?.length <= 1 && !isMutation) {
       setmultipleownererror("PT_MULTI_OWNER_ADD_ERR_MSG");
-    } else if (isMutation && formData?.document
-?.length <= 1 && formData?.docchipCategory?.code === "INDIVIDUAL.MULTIPLEOWNERS") {
+    } else if (isMutation && formData?.document?.length <= 1 && formData?.docchipCategory?.code === "INDIVIDUAL.MULTIPLEOWNERS") {
       setmultipleownererror("PT_MULTI_OWNER_ADD_ERR_MSG");
     } else {
       let fileStoreId = uploadedFile;
@@ -143,9 +125,7 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
         fileDetails.documentType = dropdownValue;
         fileDetails.fileStoreId = fileStoreId ? fileStoreId : null;
       }
-      let ownerDetails = formData.document
- && formData.document
-;
+      let ownerDetails = formData.document && formData.document;
       if (ownerDetails && ownerDetails.documents) {
         if (!isMutation) ownerDetails.documents["proofIdentity"] = fileDetails;
         else ownerDetails.documents["proofIdentity"] = { documentType: dropdownValue, fileStoreId };
@@ -172,9 +152,7 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
         setError(t("ERR_DEFAULT_INPUT_FIELD_MSG"));
         return;
       }
-      let ownerDetails = formData.document
- && formData.document
-;
+      let ownerDetails = formData.document && formData.document;
       if (ownerDetails && ownerDetails.documents) {
         ownerDetails.documents["proofIdentity"] = { documentType: dropdownValue, fileStoreId: uploadedFile };
       } else {
@@ -192,16 +170,14 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
       fileDetails.documentType = dropdownValue;
       fileDetails.fileStoreId = fileStoreId ? fileStoreId : null;
     }
-    let ownerDetails = formData.document
- && formData.document
-;
+    let ownerDetails = formData.document && formData.document;
     if (ownerDetails && ownerDetails.documents) {
       ownerDetails.documents["proofIdentity"] = fileDetails;
     } else {
       ownerDetails["documents"] = [];
       ownerDetails.documents["proofIdentity"] = fileDetails;
     }
-    onSelect("owner-details", {}, false,  true);
+    onSelect("owner-details", {}, false, true);
   }
 
   const checkMutatePT = window.location.href.includes("citizen/pt/property/property-mutation/") ? (
@@ -209,8 +185,6 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
   ) : (
     <Timeline currentStep={4} />
   );
-
-  
 
   return (
     <React.Fragment>
@@ -225,113 +199,71 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
         onAdd={onAdd}
         isMultipleAllow={formData?.docchipCategory?.value == "INDIVIDUAL.MULTIPLEOWNERS"}
       >
-
         {/* {components_ar} */}
 
-        <CardLabel>{`${t("PET_OWNER_IDENTITYPROOF_HEADING")}`}</CardLabel>   
-          <Dropdown
-            t={t}
-            isMandatory={false}
-            option={dropdownData}
-            selected={dropdownValue}
-            optionKey="i18nKey"
-            select={setTypeOfDropdownValue}
-          />
-          <UploadFile
-            id={"pt-doc"}
-            extraStyleName={"propertyCreate"}
-            accept=".jpg,.png,.pdf"
-            onUpload={selectfile}
-            onDelete={() => {
-              setUploadedFile(null);
-            }}
-            message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
-            error={error}
-          />
+        <CardLabel>{`${t("PET_OWNER_IDENTITYPROOF_HEADING")}`}</CardLabel>
+        <Dropdown t={t} isMandatory={false} option={dropdownData} selected={dropdownValue} optionKey="i18nKey" select={setTypeOfDropdownValue} />
+        <UploadFile
+          id={"pt-doc"}
+          extraStyleName={"propertyCreate"}
+          accept=".jpg,.png,.pdf"
+          onUpload={selectfile}
+          onDelete={() => {
+            setUploadedFile(null);
+          }}
+          message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
+          error={error}
+        />
         <br></br>
 
-        <CardLabel>{`${t("PTR_OWNER_PHOTO")}`}</CardLabel>   
-        <Dropdown
-            t={t}
-            isMandatory={false}
-            option={dropdownData1}
-            selected={dropdownValue}
-            optionKey="i18nKey"
-            select={setTypeOfDropdownValue}
-          />
-          <UploadFile
-            id={"pt-doc"}
-            extraStyleName={"propertyCreate"}
-            accept=".jpg,.png,.pdf"
-            onUpload={selectfile1}
-            onDelete={() => {
-              setUploadedFile(null);
-            }}
-            message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
-            error={error}
-          />
-          <br></br>
+        <CardLabel>{`${t("PTR_OWNER_PHOTO")}`}</CardLabel>
+        <Dropdown t={t} isMandatory={false} option={dropdownData1} selected={dropdownValue} optionKey="i18nKey" select={setTypeOfDropdownValue} />
+        <UploadFile
+          id={"pt-doc"}
+          extraStyleName={"propertyCreate"}
+          accept=".jpg,.png,.pdf"
+          onUpload={selectfile1}
+          onDelete={() => {
+            setUploadedFile(null);
+          }}
+          message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
+          error={error}
+        />
+        <br></br>
 
-          <CardLabel>{`${t("PTR_VACCINATION_CERTIFICATE")}`}</CardLabel>   
-          <Dropdown
-            t={t}
-            isMandatory={false}
-            option={dropdownData2}
-            selected={dropdownValue}
-            optionKey="i18nKey"
-            select={setTypeOfDropdownValue}
-          />
-          <UploadFile
-            id={"pt-doc"}
-            extraStyleName={"propertyCreate"}
-            accept=".jpg,.png,.pdf"
-            onUpload={selectfile2}
-            onDelete={() => {
-              setUploadedFile(null);
-            }}
-            message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
-            error={error}
-          />
-          <br></br>
-          <CardLabel>{`${t("PTR_OWNER_PHOTO")}`}</CardLabel>   
-          <Dropdown
-            t={t}
-            isMandatory={false}
-            option={dropdownData3}
-            selected={dropdownValue}
-            optionKey="i18nKey"
-            select={setTypeOfDropdownValue}
-          />
-          <UploadFile
-            id={"pt-doc"}
-            extraStyleName={"propertyCreate"}
-            accept=".jpg,.png,.pdf"
-            onUpload={selectfile3}
-            onDelete={() => {
-              setUploadedFile(null);
-            }}
-            message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
-            error={error}
-          />
-
-
-
-
-
-
-
-
-
-
-
+        <CardLabel>{`${t("PTR_VACCINATION_CERTIFICATE")}`}</CardLabel>
+        <Dropdown t={t} isMandatory={false} option={dropdownData2} selected={dropdownValue} optionKey="i18nKey" select={setTypeOfDropdownValue} />
+        <UploadFile
+          id={"pt-doc"}
+          extraStyleName={"propertyCreate"}
+          accept=".jpg,.png,.pdf"
+          onUpload={selectfile2}
+          onDelete={() => {
+            setUploadedFile(null);
+          }}
+          message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
+          error={error}
+        />
+        <br></br>
+        <CardLabel>{`${t("PTR_OWNER_PHOTO")}`}</CardLabel>
+        <Dropdown t={t} isMandatory={false} option={dropdownData3} selected={dropdownValue} optionKey="i18nKey" select={setTypeOfDropdownValue} />
+        <UploadFile
+          id={"pt-doc"}
+          extraStyleName={"propertyCreate"}
+          accept=".jpg,.png,.pdf"
+          onUpload={selectfile3}
+          onDelete={() => {
+            setUploadedFile(null);
+          }}
+          message={uploadedFile ? `1 ${t(`PTR_ACTION_FILEUPLOADED`)}` : t(`PTR_ACTION_NO_FILEUPLOADED`)}
+          error={error}
+        />
 
         {error ? <div style={{ height: "20px", width: "100%", fontSize: "20px", color: "red", marginTop: "5px" }}>{error}</div> : ""}
         <div style={{ disabled: "true", height: "20px", width: "100%" }}></div>
       </FormStep>
     </React.Fragment>
   );
-
-  
 };
 
 export default SelectProofIdentity;

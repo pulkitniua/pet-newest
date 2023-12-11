@@ -16,17 +16,16 @@ import { useLocation } from "react-router-dom";
 import { stringReplaceAll, CompareTwoObjects } from "../utils";
 
 const createPtrDetails = () => ({
-
   doctorName: "",
-  vaccinationNumber:"",
+  vaccinationNumber: "",
   lastVaccineDate: "",
   petAge: "",
   petType: "",
-  breedType:"",
-  clinicName:"",
+  breedType: "",
+  clinicName: "",
   petName: "",
   petGender: "",
-  
+
   key: Date.now(),
 });
 
@@ -39,61 +38,47 @@ const PTRPetdetails = ({ config, onSelect, userType, formData, setError, formSta
 
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const stateId = Digit.ULBService.getStateId();
-  
-  
-  
 
-  const { data: Menu } = Digit.Hooks.ptr.usePTRPetMDMS(stateId, "PetService", "PetType");  
-  
-  const { data: Breed_Type } = Digit.Hooks.ptr.useBreedTypeMDMS(stateId, "PetService", "BreedType" );  // hooks for breed type
+  const { data: Menu } = Digit.Hooks.ptr.usePTRPetMDMS(stateId, "PetService", "PetType");
+
+  const { data: Breed_Type } = Digit.Hooks.ptr.useBreedTypeMDMS(stateId, "PetService", "BreedType"); // hooks for breed type
   //console.log("breeedddddd",Breed_Type)
-  let menu = [];   //variable name for pettype
-  let breed_type = [];  
-    // variable name for breedtype
+  let menu = []; //variable name for pettype
+  let breed_type = [];
+  // variable name for breedtype
 
   Menu &&
     Menu.map((petone) => {
       menu.push({ i18nKey: `PTR_PET_${petone.code}`, code: `${petone.code}`, value: `${petone.name}` });
-  });
+    });
 
   //console.log("Menu", menu)
 
- 
-
-Breed_Type && 
-  Breed_Type.map((breedss) => {
-    if(breedss.PetType== pets[0]?.petType?.code) {
-      breed_type.push({
-        i18nKey: `PTR_BREED_TYPE_${breedss.code}`,
-        code: `${breedss.code}`,  
-        value: `${breedss.name}` 
-      });
-    }
-  
-   });
-
-  
-
-
-  const { data: Pet_Sex } = Digit.Hooks.ptr.usePTRGenderMDMS(stateId, "common-masters", "GenderType");       // this hook is for Pet gender type { male, female}
-
-  let pet_sex = [];    //for pet gender 
-
-  Pet_Sex &&
-  Pet_Sex.map((ptrgenders) => {                                      
-    if(ptrgenders.code !=="TRANSGENDER")
-    pet_sex.push({ i18nKey: `PTR_GENDER_${ptrgenders.code}`, code: `${ptrgenders.code}`, name: `${ptrgenders.code}` });
+  Breed_Type &&
+    Breed_Type.map((breedss) => {
+      if (breedss.PetType == pets[0]?.petType?.code) {
+        breed_type.push({
+          i18nKey: `PTR_BREED_TYPE_${breedss.code}`,
+          code: `${breedss.code}`,
+          value: `${breedss.name}`,
+        });
+      }
     });
 
-  
+  const { data: Pet_Sex } = Digit.Hooks.ptr.usePTRGenderMDMS(stateId, "common-masters", "GenderType"); // this hook is for Pet gender type { male, female}
+
+  let pet_sex = []; //for pet gender
+
+  Pet_Sex &&
+    Pet_Sex.map((ptrgenders) => {
+      if (ptrgenders.code !== "TRANSGENDER")
+        pet_sex.push({ i18nKey: `PTR_GENDER_${ptrgenders.code}`, code: `${ptrgenders.code}`, name: `${ptrgenders.code}` });
+    });
+
   useEffect(() => {
     onSelect(config?.key, pets);
-    // we need to call the breed type hook here and apply the conditional expression to get the data according to selection 
-
+    // we need to call the breed type hook here and apply the conditional expression to get the data according to selection
   }, [pets]);
-
-  
-
 
   const commonProps = {
     focusIndex,
@@ -108,17 +93,16 @@ Breed_Type &&
     config,
     menu,
     breed_type,
-    pet_sex
+    pet_sex,
   };
 
-  return  (
+  return (
     <React.Fragment>
       {pets.map((pets, index) => (
         <OwnerForm key={pets.key} index={index} pets={pets} {...commonProps} />
       ))}
-      
     </React.Fragment>
-  ) 
+  );
 };
 
 const OwnerForm = (_props) => {
@@ -137,26 +121,21 @@ const OwnerForm = (_props) => {
     formState,
     menu,
     breed_type,
-    pet_sex
-    
+    pet_sex,
   } = _props;
-  
+
   const [showToast, setShowToast] = useState(null);
-  const {
-    control,formState: localFormState,watch,setError: setLocalError,clearErrors: clearLocalErrors,setValue,trigger,} = useForm();
+  const { control, formState: localFormState, watch, setError: setLocalError, clearErrors: clearLocalErrors, setValue, trigger } = useForm();
   const formValue = watch();
   const { errors } = localFormState;
   const tenantId = Digit.ULBService.getCurrentTenantId();
 
-  const isIndividualTypeOwner = useMemo(
-    () => formData?.ownershipCategory?.code.includes("INDIVIDUAL"),
-    [formData?.ownershipCategory?.code],
-  );
+  const isIndividualTypeOwner = useMemo(() => formData?.ownershipCategory?.code.includes("INDIVIDUAL"), [formData?.ownershipCategory?.code]);
 
   const [part, setPart] = React.useState({});
 
   useEffect(() => {
-    let _ownerType = isIndividualTypeOwner 
+    let _ownerType = isIndividualTypeOwner;
 
     if (!_.isEqual(part, formValue)) {
       setPart({ ...formValue });
@@ -166,8 +145,7 @@ const OwnerForm = (_props) => {
   }, [formValue]);
 
   useEffect(() => {
-    if (Object.keys(errors).length && !_.isEqual(formState.errors[config.key]?.type || {}, errors))
-      setError(config.key, { type: errors });
+    if (Object.keys(errors).length && !_.isEqual(formState.errors[config.key]?.type || {}, errors)) setError(config.key, { type: errors });
     else if (!Object.keys(errors).length && formState.errors[config.key]) clearErrors(config.key);
   }, [errors]);
 
@@ -177,11 +155,7 @@ const OwnerForm = (_props) => {
     <React.Fragment>
       <div style={{ marginBottom: "16px" }}>
         <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>
-          {allOwners?.length > 2 ? (
-            <div style={{ marginBottom: "16px", padding: "5px", cursor: "pointer", textAlign: "right" }}>
-              X
-            </div>
-          ) : null}
+          {allOwners?.length > 2 ? <div style={{ marginBottom: "16px", padding: "5px", cursor: "pointer", textAlign: "right" }}>X</div> : null}
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("PTR_SEARCH_PET_TYPE") + " *"}</CardLabel>
@@ -192,7 +166,6 @@ const OwnerForm = (_props) => {
               rules={{ required: t("CORE_COMMON_REQUIRED_ERRMSG") }}
               render={(props) => (
                 <Dropdown
-                  
                   className="form-field"
                   selected={props.value}
                   select={props.onChange}
@@ -201,11 +174,8 @@ const OwnerForm = (_props) => {
                   optionKey="i18nKey"
                   t={t}
                 />
-                 
               )}
-              
             />
-            
           </LabelFieldPair>
           <CardLabelError style={errorStyle}>{localFormState.touched.petType ? errors?.petType?.message : ""}</CardLabelError>
           <LabelFieldPair>
@@ -244,10 +214,13 @@ const OwnerForm = (_props) => {
                 render={(props) => (
                   <TextInput
                     value={props.value}
-                   // disable={isEditScreen}
+                    // disable={isEditScreen}
                     autoFocus={focusIndex.index === pets?.key && focusIndex.type === "petName"}
                     onChange={(e) => {
-                      props.onChange(e.target.value);
+                      //props.onChange(e.target.value);
+                      // Remove non-alphabetic characters and update the value
+                      const inputValue = e.target.value.replace(/[^a-zA-Z]/g, "");
+                      props.onChange(inputValue);
                       setFocusIndex({ index: pets.key, type: "petName" });
                     }}
                     onBlur={(e) => {
@@ -271,15 +244,17 @@ const OwnerForm = (_props) => {
                 rules={{
                   required: t("CORE_COMMON_REQUIRED_ERRMSG"),
                   validate: (v) => (/^\d{1,4}$/.test(v) && parseInt(v, 10) >= 0 && parseInt(v, 10) <= 1440 ? true : t("ERR_DEFAULT_INPUT_FIELD_MSG")),
-
                 }}
                 render={(props) => (
                   <TextInput
                     value={props.value}
-                   // disable={isEditScreen}
+                    // disable={isEditScreen}
                     autoFocus={focusIndex.index === pets?.key && focusIndex.type === "petAge"}
                     onChange={(e) => {
-                      props.onChange(e);
+                      // props.onChange(e);
+                      // Remove non-numeric characters and update the value
+                      const inputValue = e.target.value.replace(/\D/g, "");
+                      props.onChange(inputValue);
                       setFocusIndex({ index: pets.key, type: "petAge" });
                     }}
                     labelStyle={{ marginTop: "unset" }}
@@ -305,7 +280,7 @@ const OwnerForm = (_props) => {
                   selected={props.value}
                   select={props.onChange}
                   onBlur={props.onBlur}
-                 // disable={isEditScreen}
+                  // disable={isEditScreen}
                   option={pet_sex}
                   optionKey="i18nKey"
                   t={t}
@@ -329,10 +304,12 @@ const OwnerForm = (_props) => {
                 render={(props) => (
                   <TextInput
                     value={props.value}
-                   // disable={isEditScreen}
+                    // disable={isEditScreen}
                     autoFocus={focusIndex.index === pets?.key && focusIndex.type === "doctorName"}
                     onChange={(e) => {
-                      props.onChange(e.target.value);
+                      //props.onChange(e.target.value);
+                      const inputValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      props.onChange(inputValue);
                       setFocusIndex({ index: pets.key, type: "doctorName" });
                     }}
                     onBlur={props.onBlur}
@@ -341,9 +318,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={errorStyle}>
-            {localFormState.touched.doctorName ? errors?.doctorName?.message : ""}
-          </CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.doctorName ? errors?.doctorName?.message : ""}</CardLabelError>
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("PTR_CLINIC_NAME") + " *"}</CardLabel>
             <div className="field">
@@ -358,10 +333,12 @@ const OwnerForm = (_props) => {
                 render={(props) => (
                   <TextInput
                     value={props.value}
-                   // disable={isEditScreen}
+                    // disable={isEditScreen}
                     autoFocus={focusIndex.index === pets?.key && focusIndex.type === "clinicName"}
                     onChange={(e) => {
-                      props.onChange(e.target.value);
+                      //props.onChange(e.target.value);
+                      const inputValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      props.onChange(inputValue);
                       setFocusIndex({ index: pets.key, type: "clinicName" });
                     }}
                     onBlur={props.onBlur}
@@ -370,9 +347,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={errorStyle}>
-            {localFormState.touched.clinicName ? errors?.clinicName?.message : ""}
-          </CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.clinicName ? errors?.clinicName?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("PTR_VACCINATED_DATE") + " *"}</CardLabel>
@@ -387,12 +362,12 @@ const OwnerForm = (_props) => {
                 }}
                 render={(props) => (
                   <TextInput
-                      type="date"
-                      value={props.value}
-                      onChange={(e) => {
-                          props.onChange(e.target.value);
-                      }}
-                      max={new Date().toISOString().split('T')[0]}
+                    type="date"
+                    value={props.value}
+                    onChange={(e) => {
+                      props.onChange(e.target.value);
+                    }}
+                    max={new Date().toISOString().split("T")[0]}
                   />
                 )}
               />
@@ -414,10 +389,13 @@ const OwnerForm = (_props) => {
                 render={(props) => (
                   <TextInput
                     value={props.value}
-                   // disable={isEditScreen}
+                    // disable={isEditScreen}
                     autoFocus={focusIndex.index === pets?.key && focusIndex.type === "vaccinationNumber"}
                     onChange={(e) => {
-                      props.onChange(e.target.value);
+                      //props.onChange(e.target.value);
+                      // Allow only alphabets, numbers, and hyphens
+                      const inputValue = e.target.value.replace(/[^A-Za-z0-9-]/g, "");
+                      props.onChange(inputValue);
                       setFocusIndex({ index: pets.key, type: "vaccinationNumber" });
                     }}
                     onBlur={props.onBlur}
@@ -426,12 +404,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={errorStyle}>
-            {localFormState.touched.vaccinationNumber ? errors?.vaccinationNumber?.message : ""}
-          </CardLabelError>
-
-
-
+          <CardLabelError style={errorStyle}>{localFormState.touched.vaccinationNumber ? errors?.vaccinationNumber?.message : ""}</CardLabelError>
         </div>
       </div>
       {showToast?.label && (
